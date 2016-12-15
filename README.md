@@ -14,3 +14,12 @@ It is worth noting that I am referencing material from AWS docs. That's because 
 ## Why now?
 A new Azure Networking feature called [MultipleIPsPerNic](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-multiple-ip-addresses-portal) has made it to Azure! Armed with this feature, you can now easily implement the Floating IP pattern in Azure. Now we're talking!
 > **NOTE:** The MultipleIPsPerNic is currently in preview and available in only a subset of the Azure regions. That also means it's not bound by an SLA or supportability. Once it becomes GA, it should become available in all Azure regions with the normal Azure SLAs.
+
+> The following exceprt from the [documentation page](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-multiple-ip-addresses-portal) explains the steps needed to get your Azure subscription whitelisted in order to use this feature:
+
+> Register for the preview by sending an email to [Multiple IPs](mailto:MultipleIPsPreview@microsoft.com?subject=Request to enable subscription <subscription id>>) with your subscription ID and intended use. Do not attempt to complete the remaining steps:
+
+>  * Until you receive an e-mail notifying you that you've been accepted into the preview
+
+>  * Without following the instructions in the email you receive
+
