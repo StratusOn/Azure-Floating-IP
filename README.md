@@ -23,3 +23,32 @@ A new Azure Networking feature called [MultipleIPsPerNic](https://docs.microsoft
 
 >  * Without following the instructions in the email you receive
 
+## How-To
+### The Manual Method
+The following steps describe how to take the 2 script files found under the "ubuntu" folder in this repo and configure them on the 2 nodes against which you wish to setup active/standby HA using the Floating IP pattern.
+
+> The following steps assume that you already have 2 ubuntu VM's created and running and that they are in a resource group named "HA-rg". You may of course change the name to match that of your resource group.
+
+1. Create a Service Principal and give it "contributor" access to your resource group. For example, you can do that using [Azure CLI v2](https://github.com/Azure/azure-cli) as follows:
+
+  > **az** **ad** **sp** **create-for-rbac** -**n** "http://aad-ha-demo-app" --**role** contributor --**scopes** "/subscriptions/ff001122-1111-4321-1234-aabbccddeeff/resourceGroups/HA-rg"
+
+  where:
+  * **http://aad-ha-demo-app:** The service principal name; it can be anything you choose.
+  * **ff001122-1111-4321-1234-aabbccddeeff:** Replace with your own subscription id.
+  * **HA-rg:** Replace with your own resource group name.
+
+  Take note of the following pieces of information in the resulting JSON – you’ll need to plug their values in the script:
+  * **name**
+  * **password**
+  * **tenant**
+
+2. On each VM, install the Azure CLI v2. See the instructions on this page: https://github.com/Azure/azure-cli
+
+  > I'd highly recommend using the new Python-based Azure CLI versus the old Node.js-based Azure CLI available [here](https://github.com/Azure/azure-xplat-cli).
+  
+  > If you choose to use the old Azure Xplat CLI, you'd need to make changes in the scripts to replace the Azure CLI calls with those from the older version. Note though that the scripts have not been tested with the older CLI commands.
+
+3. Download the script version for each node onto the corresponding VM and update the 9 variables at the top of the script to reflect your own environment and the AAD service principal information.
+
+4. Test the scripts by inducing a failure scenario that triggers a failover and floating of the VIP from the primary node to the standby.
