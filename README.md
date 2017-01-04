@@ -56,6 +56,56 @@ The following steps describe how to take the 2 script files found under the "ubu
   
   > If you choose to use the old Azure Xplat CLI, you'd need to make changes in the scripts to replace the Azure CLI calls with those from the older version. Note though that the scripts have not been tested with the older CLI commands.
 
-3. Download the script version for each node onto the corresponding VM and update the 9 variables at the top of the script to reflect your own environment and the AAD service principal information.
+3. Setup the IP Configurations on each VM/node. This is the part that actually leverages the [MultipleIPsPerNic](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-multiple-ip-addresses-portal) feature. Here are the steps:
 
-4. Test the scripts by inducing a failure scenario that triggers a failover and floating of the VIP from the primary node to the standby.
+  a. **On the first VM (the primary node):**
+
+    1. Create a primary IP configuration as shown in the following screenshot:
+
+    ![Primary IP Configuration of the first node](https://github.com/StratusOn/Azure-Floating-IP/blob/master/images/ha-node1-nic_ipconfig1.jpg "Primary IP Configuration of the first node")
+    
+    > Some quick notes:
+    >
+    > * Make sure to configure the IP configuration to use a public IP (_ha-node1-ip_ in this example)
+    > * Set the private IP assignment to Static and specify an IP address from your VNet's subnet (_10.6.0.11_ in this example)
+
+    2. Create a secondary IP configuration as shown in the following screenshot:
+    
+    ![Secondary IP Configuration of the first node](https://github.com/StratusOn/Azure-Floating-IP/blob/master/images/ha-node1-nic_ipconfig-float.jpg "Secondary IP Configuration of the first node")
+
+    > Some quick notes:
+    >
+    > * Make sure to configure the IP configuration to use the VIP public IP (_ha-vip-ip_ in this example)
+    > * Set the private IP assignment to Static and specify an IP address from your VNet's subnet (_10.6.0.10_ in this example)
+    >
+    
+    **IMPORTANT NOTE:** If your subscription is correctly whitelisted, you will see an Add button available in the IP Configurations blade of the NIC as shown in the following screenshot:
+    
+    ![IP Configurations of the first node](https://github.com/StratusOn/Azure-Floating-IP/blob/master/images/ha-node1-nic_ip-configurations.jpg "IP Configurations of the first node")
+    
+    **If you do not see the Add button, then please verify that your subscription is whitelisted by following the steps listed above on how to register for the [MultipleIPsPerNic](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-multiple-ip-addresses-portal) feature.**
+
+  b. **On the second VM (the standby node):**
+  
+    1. Create the primary IP configuration as shown in the following screenshot:
+    
+    ![Primary IP Configuration of the second node](https://github.com/StratusOn/Azure-Floating-IP/blob/master/images/ha-node2-nic_ipconfig1.jpg "Primary IP Configuration of the second node")
+
+    > Some quick notes:
+    >
+    > * Make sure to configure the IP configuration to use a public IP (_ha-node2-ip_ in this example)
+    > * Set the private IP assignment to Static and specify an IP address from your VNet's subnet (_10.6.0.12_ in this example)
+
+    The resulting IP Configuration of the second VM's NIC will look similar to the following screenshot:
+    
+    ![IP Configurations of the second node](https://github.com/StratusOn/Azure-Floating-IP/blob/master/images/ha-node2-nic_ip-configurations.jpg "IP Configurations of the second node")
+    
+    >
+    > The overall environment described in the examples above looks like the following:
+    >
+    > ![Resources of the sample PoC environment](https://github.com/StratusOn/Azure-Floating-IP/blob/master/images/HA-rg.jpg "Resources of the sample PoC environment")
+    >
+    
+4. Download the script version for each node onto the corresponding VM and update the 9 variables at the top of the script to reflect your own environment and the AAD service principal information.
+
+5. Test the scripts by inducing a failure scenario that triggers a failover and floating of the VIP from the primary node to the standby.
